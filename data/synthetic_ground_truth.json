@@ -1,0 +1,110 @@
+{
+  "note": "Planted events. 'expected_verdict' is what a correct InsightTrace engine should conclude.",
+  "date_range": [
+    "2023-01-01",
+    "2024-12-31"
+  ],
+  "events": [
+    {
+      "id": "A_west_binders_discount",
+      "type": "TRUE_CAUSE",
+      "kpi": "profit",
+      "window": [
+        "2024-03-01",
+        "2024-04-30"
+      ],
+      "where": {
+        "Region": "West",
+        "Sub-Category": "Binders"
+      },
+      "what_happened": "Discounts on Binders in the West jumped to 35-45%. Volume rose, revenue held up, but profit collapsed.",
+      "expected_verdict": "CAUSE",
+      "expected_action": "Cap discounts on West Binders"
+    },
+    {
+      "id": "B_central_top_customers_churn",
+      "type": "TRUE_CAUSE",
+      "kpi": "revenue",
+      "window": [
+        "2024-06-01",
+        "2024-12-31"
+      ],
+      "where": {
+        "Region": "Central",
+        "Customer ID": [
+          "CU-0161",
+          "CU-0169",
+          "CU-0172",
+          "CU-0174",
+          "CU-0195"
+        ]
+      },
+      "what_happened": "The 5 largest Central customers stopped ordering from June 2024 and never returned.",
+      "expected_verdict": "CAUSE",
+      "expected_action": "Win-back outreach to the churned accounts"
+    },
+    {
+      "id": "C_south_phonesmax_stockout",
+      "type": "TRUE_CAUSE",
+      "kpi": "revenue",
+      "window": [
+        "2024-10-15",
+        "2024-11-30"
+      ],
+      "where": {
+        "Region": "South",
+        "Product ID": "TEC-PH-00028",
+        "Product Name": "Phones Max"
+      },
+      "what_happened": "The best-selling South phone was ~92% unavailable for 6 weeks.",
+      "expected_verdict": "CAUSE",
+      "expected_action": "Fix South inventory for this product"
+    },
+    {
+      "id": "D1_east_chairs_march_dip",
+      "type": "DECOY",
+      "kpi": "revenue",
+      "window": [
+        "2023-03-01",
+        "2023-03-31",
+        "2024-03-01",
+        "2024-03-31"
+      ],
+      "where": {
+        "Region": "East",
+        "Sub-Category": "Chairs"
+      },
+      "what_happened": "East Chairs dip every March, in both years. It overlaps event A but is recurring, not new.",
+      "expected_verdict": "NOT_A_CAUSE",
+      "expected_action": "None. Recurring pattern."
+    },
+    {
+      "id": "D2_january_seasonal_dip",
+      "type": "DECOY",
+      "kpi": "revenue",
+      "window": [
+        "2023-01-01",
+        "2023-01-31",
+        "2024-01-01",
+        "2024-01-31"
+      ],
+      "where": {},
+      "what_happened": "January is always much slower than December. A naive month-over-month alert would fire.",
+      "expected_verdict": "NOT_A_CAUSE",
+      "expected_action": "None. Normal seasonality."
+    },
+    {
+      "id": "U_september_uniform_dip",
+      "type": "UNEXPLAINED",
+      "kpi": "revenue",
+      "window": [
+        "2024-09-01",
+        "2024-09-30"
+      ],
+      "where": {},
+      "what_happened": "About 18% of sales vanished at random across every region, product and customer.",
+      "expected_verdict": "UNKNOWN",
+      "expected_action": "Say UNKNOWN; suggest checking outside factors (outage, holiday, data gap)."
+    }
+  ]
+}
