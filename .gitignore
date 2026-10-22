@@ -1,0 +1,18 @@
+# Secrets - NEVER commit these
+.env
+.streamlit/secrets.toml
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Editor / OS
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Large generated files (the demo CSV in data/ IS committed on purpose)
+data/*.duckdb
+data/generated_*.csv
