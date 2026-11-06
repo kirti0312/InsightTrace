@@ -35,15 +35,109 @@ If evidence is missing or mixed, the answer is **UNKNOWN**, and the app suggests
 
 ---
 
-## How it works
+## Architecture
+
+### 1. System overview
+
+The app has four layers. The **engine** calculates every number. The **LLM layer** only chooses which calculation to run and rewords the result. The **API** connects the browser to both. The **frontend** shows the answers.
+
+```mermaid
+flowchart TB
+  U([User in browser]):::user
+  subgraph FE["Frontend: React + Vite"]
+    direction LR
+    T1[Overview]:::fe
+    T2[Analyst]:::fe
+    T3[Root Cause]:::fe
+    T4[Forecast]:::fe
+    T5[Voice]:::fe
+  end
+  subgraph API["Backend: FastAPI"]
+    R[Routes in api/main.py<br/>upload, demo, summary, alerts, why, tool, ask]:::api
+    S[Service in api/service.py<br/>sessions, rate limits, upload size guard]:::api
+  end
+  subgraph ENG["Engine: all numbers are computed here"]
+    direction LR
+    E1[ingest<br/>CSV/Excel to DuckDB]:::eng
+    E2[kpi]:::eng
+    E3[detect<br/>seasonal baseline]:::eng
+    E4[decompose<br/>exact contributions]:::eng
+    E5[verify<br/>5 checks + placebo]:::eng
+    E6[evidence<br/>records E1..En]:::eng
+    E7[forecast<br/>conformal + back-test]:::eng
+    E1 --> E2 --> E3 --> E4 --> E5 --> E6
+    E2 --> E7
+  end
+  subgraph LLM["LLM layer: words only, never numbers"]
+    direction LR
+    L1[Planner<br/>picks 1 of 8 tools]:::llm
+    L2[Tools + SQL guard<br/>run the calculation]:::llm
+    L3[Explainer<br/>rewords the evidence]:::llm
+    L4[Validator<br/>rejects unsupported text]:::llm
+    L5[Plain fallback<br/>written by code]:::llm
+    L1 --> L2 --> L3 --> L4
+    L4 -- rejected twice --> L5
+  end
+  G[(Gemini API)]:::ext
+  D[(DuckDB<br/>in memory)]:::db
+  U --> FE
+  FE -- "HTTPS /api" --> R --> S
+  S --> ENG
+  S --> LLM
+  E1 --- D
+  L2 --> ENG
+  L1 -.-> G
+  L3 -.-> G
+  classDef user fill:#2b2350,stroke:#a78bfa,color:#fff
+  classDef fe fill:#1e3a8a,stroke:#60a5fa,color:#fff
+  classDef api fill:#4c1d95,stroke:#a78bfa,color:#fff
+  classDef eng fill:#064e3b,stroke:#34d399,color:#fff
+  classDef llm fill:#831843,stroke:#f472b6,color:#fff
+  classDef ext fill:#333,stroke:#aaa,color:#fff
+  classDef db fill:#333,stroke:#aaa,color:#fff
+```
+
+### 2. Data pipeline (runs once when a file is loaded)
 
 ```
 CSV / Excel ──► ingest ──► detect changes ──► decompose by group ──► verify (5 checks) ──► evidence records E1..En
-                 (DuckDB)   (seasonal baseline)  (exact contributions)   (incl. placebo test)         │
-                                                                                                      ▼
- question ──► AI picks ONE of 8 fixed tools ──► Python/SQL computes ──► AI rewords ──► validator ──► answer
-                                                                          (or plain text if it fails)
+                 (DuckDB)   (seasonal baseline)  (exact contributions)   (incl. placebo test)
 ```
+
+### 3. What happens when you ask a question
+
+```mermaid
+sequenceDiagram
+  autonumber
+  actor U as User
+  participant FE as React app
+  participant API as FastAPI + Service
+  participant PL as Planner (Gemini)
+  participant TL as Tool (Python/SQL)
+  participant EX as Explainer (Gemini)
+  participant VA as Validator
+  U->>FE: "Why did revenue fall in autumn 2024?"
+  FE->>API: POST /api/sessions/{id}/ask
+  API->>API: rate limit check (per visitor and global)
+  API->>PL: question + list of 8 allowed tools
+  PL-->>API: tool = why, arguments
+  API->>TL: run the tool
+  TL-->>API: numbers + evidence records E1..En
+  API->>EX: evidence only
+  EX-->>API: draft answer with [E#] citations
+  API->>VA: check every number, date, citation
+  alt draft is supported by evidence
+    VA-->>API: accepted
+  else rejected
+    API->>EX: retry once with the reasons
+    EX-->>API: second draft
+    VA-->>API: accepted, or fall back to plain text from code
+  end
+  API-->>FE: answer + evidence + status
+  FE-->>U: answer card with evidence chips
+```
+
+### 4. Why it is built this way
 
 - **Detection** compares each period with what the same time of year usually brings, so ordinary seasons are not alerts.
 - **Decomposition** is exact: group contributions add up to the total change.
@@ -52,16 +146,6 @@ CSV / Excel ──► ingest ──► detect changes ──► decompose by gro
 - **Validator** rejects wording that contains numbers or dates not in the cited records, overclaims ("proves"), stray citations, or sign mistakes like "fell by -5". It retries once, then falls back to a plain summary written by code.
 - **Analyst** can only use 8 fixed tools (KPI value, breakdown, trend, contributors, alerts, why, forecast, read-only SQL). The SQL tool accepts a single `SELECT` on one table and blocks everything else.
 - **Forecast** uses seasonal methods with conformal ranges and walk-forward validation, and reports `LOW_CONFIDENCE` when it does not beat a simple baseline.
-
----
-
-## Honest limits
-
-- On datasets generated with planted causes and decoys (`bench/`), the engine found the right answer in about **80% of checks** (105 of 126 pooled over 18 generated datasets). It is weakest on short stock-outs and on very noisy profit. This is a test on synthetic data, **not a claim about real-world accuracy**.
-- The forecast is labelled low confidence on roughly half of the test datasets, because the back-test shows it does not reliably beat repeating last year.
-- It explains changes using the columns in your file only. Promotions, competitors or weather are not in the data, so they can only appear as "check this next", never as findings.
-- Speech recognition depends on the browser (best in Chrome or Edge). In Chrome the audio is sent to Google to be turned into text.
-- Sessions are kept in the server's memory for 2 hours. A restart clears them.
 
 ---
 
@@ -133,7 +217,3 @@ docs/       design notes
 ## Built with
 
 Python, pandas, DuckDB, FastAPI, React, Vite, Gemini (backend only), pytest.
-
-## Credits and inspiration
-
-The idea of decomposing a KPI change, verifying contributors and answering with evidence was inspired by the publicly described principles of Team CtrlAltReinvent's "WhyChain". InsightTrace is an independent implementation, and no code was copied. The visual style takes inspiration from the NOPAL template's dark, cinematic look; the logo, the robot "Trace" and the interface are original.
