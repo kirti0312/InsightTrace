@@ -1,0 +1,723 @@
+[
+ {
+  "scenarios": [
+   {
+    "id": "A",
+    "kpi": "profit",
+    "window": [
+     "2024-03-01",
+     "2024-04-30"
+    ],
+    "expected": "cause: West + Phones",
+    "passed": true,
+    "detail": "Region = West + Sub-Category = Phones  (also: Region = West + Category = Technology; Region = West + Product Name = Phones Max)",
+    "conclusion": "CAUSE",
+    "seconds": 16.8
+   },
+   {
+    "id": "B",
+    "kpi": "revenue",
+    "window": [
+     "2024-06-01",
+     "2024-08-31"
+    ],
+    "expected": "cause: the churned Central customers",
+    "passed": true,
+    "detail": "found 5 of 5 planted customers, named 5 in total",
+    "conclusion": "CAUSE",
+    "seconds": 6.0
+   },
+   {
+    "id": "C",
+    "kpi": "revenue",
+    "window": [
+     "2024-10-15",
+     "2024-11-30"
+    ],
+    "expected": "cause involving Phones / Phones Max",
+    "passed": true,
+    "detail": "Sub-Category = Phones  (also: Product Name = Phones Max)",
+    "conclusion": "CAUSE",
+    "seconds": 5.7
+   },
+   {
+    "id": "U",
+    "kpi": "revenue",
+    "window": [
+     "2024-09-01",
+     "2024-09-30"
+    ],
+    "expected": "UNKNOWN",
+    "passed": true,
+    "detail": "UNKNOWN",
+    "conclusion": "UNKNOWN",
+    "seconds": 3.9
+   },
+   {
+    "id": "D1",
+    "kpi": "revenue",
+    "window": [
+     "2024-03-01",
+     "2024-03-31"
+    ],
+    "expected": "East Chairs is not a cause",
+    "passed": true,
+    "detail": "not reported as a cause",
+    "conclusion": "UNKNOWN",
+    "seconds": 2.5
+   },
+   {
+    "id": "D2",
+    "kpi": "revenue",
+    "window": [
+     "2024-01-01",
+     "2024-01-31"
+    ],
+    "expected": "UNKNOWN",
+    "passed": true,
+    "detail": "UNKNOWN",
+    "conclusion": "UNKNOWN",
+    "seconds": 2.2
+   },
+   {
+    "id": "CALM",
+    "kpi": "revenue",
+    "window": [
+     "2023-07-01",
+     "2023-08-31"
+    ],
+    "expected": "UNKNOWN",
+    "passed": true,
+    "detail": "UNKNOWN",
+    "conclusion": "UNKNOWN",
+    "seconds": 0.6
+   }
+  ],
+  "forecast": {
+   "status": "LOW_CONFIDENCE",
+   "coverage": 0.34782608695652173,
+   "n_checks": 69,
+   "level": 0.8,
+   "gap_to_target": 0.4521739130434783
+  },
+  "name": "synthetic_demo.csv"
+ },
+ {
+  "scenarios": [
+   {
+    "id": "A",
+    "kpi": "profit",
+    "window": [
+     "2024-03-01",
+     "2024-04-30"
+    ],
+    "expected": "cause: West + Phones",
+    "passed": true,
+    "detail": "Sub-Category = Phones + Region = West  (also: Region = West + Product Name = Phones Max)",
+    "conclusion": "CAUSE",
+    "seconds": 14.6
+   },
+   {
+    "id": "B",
+    "kpi": "revenue",
+    "window": [
+     "2024-06-01",
+     "2024-08-31"
+    ],
+    "expected": "cause: the churned Central customers",
+    "passed": true,
+    "detail": "found 5 of 5 planted customers, named 5 in total",
+    "conclusion": "CAUSE",
+    "seconds": 6.4
+   },
+   {
+    "id": "C",
+    "kpi": "revenue",
+    "window": [
+     "2024-10-15",
+     "2024-11-30"
+    ],
+    "expected": "cause involving Phones / Phones Max",
+    "passed": false,
+    "detail": "UNKNOWN",
+    "conclusion": "UNKNOWN",
+    "seconds": 2.7
+   },
+   {
+    "id": "U",
+    "kpi": "revenue",
+    "window": [
+     "2024-09-01",
+     "2024-09-30"
+    ],
+    "expected": "UNKNOWN",
+    "passed": true,
+    "detail": "UNKNOWN",
+    "conclusion": "UNKNOWN",
+    "seconds": 3.7
+   },
+   {
+    "id": "D1",
+    "kpi": "revenue",
+    "window": [
+     "2024-03-01",
+     "2024-03-31"
+    ],
+    "expected": "East Chairs is not a cause",
+    "passed": false,
+    "detail": "reported as a cause: Product Name = Machines Plus, Machines Pro, Chairs Pro + Category = Technology",
+    "conclusion": "CAUSE",
+    "seconds": 16.7
+   },
+   {
+    "id": "D2",
+    "kpi": "revenue",
+    "window": [
+     "2024-01-01",
+     "2024-01-31"
+    ],
+    "expected": "UNKNOWN",
+    "passed": true,
+    "detail": "UNKNOWN",
+    "conclusion": "UNKNOWN",
+    "seconds": 0.1
+   },
+   {
+    "id": "CALM",
+    "kpi": "revenue",
+    "window": [
+     "2023-07-01",
+     "2023-08-31"
+    ],
+    "expected": "UNKNOWN",
+    "passed": true,
+    "detail": "UNKNOWN",
+    "conclusion": "UNKNOWN",
+    "seconds": 3.1
+   }
+  ],
+  "forecast": {
+   "status": "LOW_CONFIDENCE",
+   "coverage": 0.5652173913043478,
+   "n_checks": 69,
+   "level": 0.8,
+   "gap_to_target": 0.23478260869565226
+  },
+  "name": "generated seed 1"
+ },
+ {
+  "scenarios": [
+   {
+    "id": "A",
+    "kpi": "profit",
+    "window": [
+     "2024-03-01",
+     "2024-04-30"
+    ],
+    "expected": "cause: West + Phones",
+    "passed": true,
+    "detail": "City = Washington Metro, Oregon Metro, California Metro, Ohio Metro  (also: Sub-Category = Phones + City = Washington Metro, Oregon Metro, California Metro, Ohio Metro; Sub-Category = Phones + Region = West; Product Name = Phones Max + Region = West)",
+    "conclusion": "CAUSE",
+    "seconds": 40.3
+   },
+   {
+    "id": "B",
+    "kpi": "revenue",
+    "window": [
+     "2024-06-01",
+     "2024-08-31"
+    ],
+    "expected": "cause: the churned Central customers",
+    "passed": false,
+    "detail": "found 0 of 5 planted customers, named 0 in total",
+    "conclusion": "CAUSE",
+    "seconds": 4.3
+   },
+   {
+    "id": "C",
+    "kpi": "revenue",
+    "window": [
+     "2024-10-15",
+     "2024-11-30"
+    ],
+    "expected": "cause involving Phones / Phones Max",
+    "passed": true,
+    "detail": "Product Name = Phones Max",
+    "conclusion": "CAUSE",
+    "seconds": 4.4
+   },
+   {
+    "id": "U",
+    "kpi": "revenue",
+    "window": [
+     "2024-09-01",
+     "2024-09-30"
+    ],
+    "expected": "UNKNOWN",
+    "passed": true,
+    "detail": "UNKNOWN",
+    "conclusion": "UNKNOWN",
+    "seconds": 3.7
+   },
+   {
+    "id": "D1",
+    "kpi": "revenue",
+    "window": [
+     "2024-03-01",
+     "2024-03-31"
+    ],
+    "expected": "East Chairs is not a cause",
+    "passed": true,
+    "detail": "not reported as a cause",
+    "conclusion": "CAUSE",
+    "seconds": 7.7
+   },
+   {
+    "id": "D2",
+    "kpi": "revenue",
+    "window": [
+     "2024-01-01",
+     "2024-01-31"
+    ],
+    "expected": "UNKNOWN",
+    "passed": true,
+    "detail": "UNKNOWN",
+    "conclusion": "UNKNOWN",
+    "seconds": 2.6
+   },
+   {
+    "id": "CALM",
+    "kpi": "revenue",
+    "window": [
+     "2023-07-01",
+     "2023-08-31"
+    ],
+    "expected": "UNKNOWN",
+    "passed": true,
+    "detail": "UNKNOWN",
+    "conclusion": "UNKNOWN",
+    "seconds": 0.7
+   }
+  ],
+  "forecast": {
+   "status": "OK",
+   "coverage": 0.6956521739130435,
+   "n_checks": 69,
+   "level": 0.8,
+   "gap_to_target": 0.10434782608695659
+  },
+  "name": "generated seed 2"
+ },
+ {
+  "scenarios": [
+   {
+    "id": "A",
+    "kpi": "profit",
+    "window": [
+     "2024-03-01",
+     "2024-04-30"
+    ],
+    "expected": "cause: West + Phones",
+    "passed": true,
+    "detail": "Sub-Category = Phones + Region = West  (also: Product Name = Phones Max + Region = West)",
+    "conclusion": "CAUSE",
+    "seconds": 13.5
+   },
+   {
+    "id": "B",
+    "kpi": "revenue",
+    "window": [
+     "2024-06-01",
+     "2024-08-31"
+    ],
+    "expected": "cause: the churned Central customers",
+    "passed": true,
+    "detail": "found 5 of 5 planted customers, named 5 in total",
+    "conclusion": "CAUSE",
+    "seconds": 4.1
+   },
+   {
+    "id": "C",
+    "kpi": "revenue",
+    "window": [
+     "2024-10-15",
+     "2024-11-30"
+    ],
+    "expected": "cause involving Phones / Phones Max",
+    "passed": false,
+    "detail": "UNKNOWN",
+    "conclusion": "UNKNOWN",
+    "seconds": 2.3
+   },
+   {
+    "id": "U",
+    "kpi": "revenue",
+    "window": [
+     "2024-09-01",
+     "2024-09-30"
+    ],
+    "expected": "UNKNOWN",
+    "passed": true,
+    "detail": "UNKNOWN",
+    "conclusion": "UNKNOWN",
+    "seconds": 3.8
+   },
+   {
+    "id": "D1",
+    "kpi": "revenue",
+    "window": [
+     "2024-03-01",
+     "2024-03-31"
+    ],
+    "expected": "East Chairs is not a cause",
+    "passed": true,
+    "detail": "not reported as a cause",
+    "conclusion": "UNKNOWN",
+    "seconds": 2.5
+   },
+   {
+    "id": "D2",
+    "kpi": "revenue",
+    "window": [
+     "2024-01-01",
+     "2024-01-31"
+    ],
+    "expected": "UNKNOWN",
+    "passed": true,
+    "detail": "UNKNOWN",
+    "conclusion": "UNKNOWN",
+    "seconds": 2.2
+   },
+   {
+    "id": "CALM",
+    "kpi": "revenue",
+    "window": [
+     "2023-07-01",
+     "2023-08-31"
+    ],
+    "expected": "UNKNOWN",
+    "passed": true,
+    "detail": "UNKNOWN",
+    "conclusion": "UNKNOWN",
+    "seconds": 0.5
+   }
+  ],
+  "forecast": {
+   "status": "OK",
+   "coverage": 0.7101449275362319,
+   "n_checks": 69,
+   "level": 0.8,
+   "gap_to_target": 0.08985507246376812
+  },
+  "name": "generated seed 3"
+ },
+ {
+  "scenarios": [
+   {
+    "id": "A",
+    "kpi": "profit",
+    "window": [
+     "2024-03-01",
+     "2024-04-30"
+    ],
+    "expected": "cause: West + Phones",
+    "passed": true,
+    "detail": "Region = West + Sub-Category = Phones  (also: Region = West + Product Name = Phones Max)",
+    "conclusion": "CAUSE",
+    "seconds": 14.0
+   },
+   {
+    "id": "B",
+    "kpi": "revenue",
+    "window": [
+     "2024-06-01",
+     "2024-08-31"
+    ],
+    "expected": "cause: the churned Central customers",
+    "passed": false,
+    "detail": "found 0 of 5 planted customers, named 0 in total",
+    "conclusion": "UNKNOWN",
+    "seconds": 0.0
+   },
+   {
+    "id": "C",
+    "kpi": "revenue",
+    "window": [
+     "2024-10-15",
+     "2024-11-30"
+    ],
+    "expected": "cause involving Phones / Phones Max",
+    "passed": false,
+    "detail": "UNKNOWN",
+    "conclusion": "UNKNOWN",
+    "seconds": 2.8
+   },
+   {
+    "id": "U",
+    "kpi": "revenue",
+    "window": [
+     "2024-09-01",
+     "2024-09-30"
+    ],
+    "expected": "UNKNOWN",
+    "passed": true,
+    "detail": "UNKNOWN",
+    "conclusion": "UNKNOWN",
+    "seconds": 3.7
+   },
+   {
+    "id": "D1",
+    "kpi": "revenue",
+    "window": [
+     "2024-03-01",
+     "2024-03-31"
+    ],
+    "expected": "East Chairs is not a cause",
+    "passed": true,
+    "detail": "not reported as a cause",
+    "conclusion": "UNKNOWN",
+    "seconds": 2.4
+   },
+   {
+    "id": "D2",
+    "kpi": "revenue",
+    "window": [
+     "2024-01-01",
+     "2024-01-31"
+    ],
+    "expected": "UNKNOWN",
+    "passed": false,
+    "detail": "reported causes: Ship Mode = Second Class, First Class",
+    "conclusion": "CAUSE",
+    "seconds": 4.0
+   },
+   {
+    "id": "CALM",
+    "kpi": "revenue",
+    "window": [
+     "2023-07-01",
+     "2023-08-31"
+    ],
+    "expected": "UNKNOWN",
+    "passed": true,
+    "detail": "UNKNOWN",
+    "conclusion": "UNKNOWN",
+    "seconds": 0.7
+   }
+  ],
+  "forecast": {
+   "status": "LOW_CONFIDENCE",
+   "coverage": 0.6521739130434783,
+   "n_checks": 69,
+   "level": 0.8,
+   "gap_to_target": 0.14782608695652177
+  },
+  "name": "generated seed 4"
+ },
+ {
+  "scenarios": [
+   {
+    "id": "A",
+    "kpi": "profit",
+    "window": [
+     "2024-03-01",
+     "2024-04-30"
+    ],
+    "expected": "cause: West + Phones",
+    "passed": true,
+    "detail": "Region = West + Sub-Category = Phones  (also: Region = West + Product Name = Phones Max)",
+    "conclusion": "CAUSE",
+    "seconds": 9.1
+   },
+   {
+    "id": "B",
+    "kpi": "revenue",
+    "window": [
+     "2024-06-01",
+     "2024-08-31"
+    ],
+    "expected": "cause: the churned Central customers",
+    "passed": false,
+    "detail": "found 0 of 5 planted customers, named 0 in total",
+    "conclusion": "UNKNOWN",
+    "seconds": 0.0
+   },
+   {
+    "id": "C",
+    "kpi": "revenue",
+    "window": [
+     "2024-10-15",
+     "2024-11-30"
+    ],
+    "expected": "cause involving Phones / Phones Max",
+    "passed": false,
+    "detail": "UNKNOWN",
+    "conclusion": "UNKNOWN",
+    "seconds": 2.5
+   },
+   {
+    "id": "U",
+    "kpi": "revenue",
+    "window": [
+     "2024-09-01",
+     "2024-09-30"
+    ],
+    "expected": "UNKNOWN",
+    "passed": true,
+    "detail": "UNKNOWN",
+    "conclusion": "UNKNOWN",
+    "seconds": 3.6
+   },
+   {
+    "id": "D1",
+    "kpi": "revenue",
+    "window": [
+     "2024-03-01",
+     "2024-03-31"
+    ],
+    "expected": "East Chairs is not a cause",
+    "passed": true,
+    "detail": "not reported as a cause",
+    "conclusion": "UNKNOWN",
+    "seconds": 2.7
+   },
+   {
+    "id": "D2",
+    "kpi": "revenue",
+    "window": [
+     "2024-01-01",
+     "2024-01-31"
+    ],
+    "expected": "UNKNOWN",
+    "passed": true,
+    "detail": "UNKNOWN",
+    "conclusion": "UNKNOWN",
+    "seconds": 2.3
+   },
+   {
+    "id": "CALM",
+    "kpi": "revenue",
+    "window": [
+     "2023-07-01",
+     "2023-08-31"
+    ],
+    "expected": "UNKNOWN",
+    "passed": true,
+    "detail": "UNKNOWN",
+    "conclusion": "UNKNOWN",
+    "seconds": 0.0
+   }
+  ],
+  "forecast": {
+   "status": "OK",
+   "coverage": 0.7391304347826086,
+   "n_checks": 69,
+   "level": 0.8,
+   "gap_to_target": 0.0608695652173914
+  },
+  "name": "generated seed 5"
+ },
+ {
+  "scenarios": [
+   {
+    "id": "A",
+    "kpi": "profit",
+    "window": [
+     "2024-03-01",
+     "2024-04-30"
+    ],
+    "expected": "cause: West + Phones",
+    "passed": true,
+    "detail": "City = Oregon Metro, Washington Metro, California Metro  (also: Sub-Category = Phones + Region = West; Product Name = Phones Max + Region = West)",
+    "conclusion": "CAUSE",
+    "seconds": 10.0
+   },
+   {
+    "id": "B",
+    "kpi": "revenue",
+    "window": [
+     "2024-06-01",
+     "2024-08-31"
+    ],
+    "expected": "cause: the churned Central customers",
+    "passed": true,
+    "detail": "found 5 of 5 planted customers, named 5 in total",
+    "conclusion": "CAUSE",
+    "seconds": 4.2
+   },
+   {
+    "id": "C",
+    "kpi": "revenue",
+    "window": [
+     "2024-10-15",
+     "2024-11-30"
+    ],
+    "expected": "cause involving Phones / Phones Max",
+    "passed": false,
+    "detail": "UNKNOWN",
+    "conclusion": "UNKNOWN",
+    "seconds": 2.6
+   },
+   {
+    "id": "U",
+    "kpi": "revenue",
+    "window": [
+     "2024-09-01",
+     "2024-09-30"
+    ],
+    "expected": "UNKNOWN",
+    "passed": true,
+    "detail": "UNKNOWN",
+    "conclusion": "UNKNOWN",
+    "seconds": 3.6
+   },
+   {
+    "id": "D1",
+    "kpi": "revenue",
+    "window": [
+     "2024-03-01",
+     "2024-03-31"
+    ],
+    "expected": "East Chairs is not a cause",
+    "passed": true,
+    "detail": "not reported as a cause",
+    "conclusion": "UNKNOWN",
+    "seconds": 0.0
+   },
+   {
+    "id": "D2",
+    "kpi": "revenue",
+    "window": [
+     "2024-01-01",
+     "2024-01-31"
+    ],
+    "expected": "UNKNOWN",
+    "passed": true,
+    "detail": "UNKNOWN",
+    "conclusion": "UNKNOWN",
+    "seconds": 0.0
+   },
+   {
+    "id": "CALM",
+    "kpi": "revenue",
+    "window": [
+     "2023-07-01",
+     "2023-08-31"
+    ],
+    "expected": "UNKNOWN",
+    "passed": true,
+    "detail": "UNKNOWN",
+    "conclusion": "UNKNOWN",
+    "seconds": 0.7
+   }
+  ],
+  "forecast": {
+   "status": "OK",
+   "coverage": 0.7246376811594203,
+   "n_checks": 69,
+   "level": 0.8,
+   "gap_to_target": 0.07536231884057976
+  },
+  "name": "generated seed 6"
+ }
+]

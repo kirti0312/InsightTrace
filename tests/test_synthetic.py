@@ -48,23 +48,24 @@ def test_ground_truth_lists_all_six_events(data):
     _, truth = data
     ids = {e["id"] for e in truth["events"]}
     assert ids == {
-        "A_west_binders_discount", "B_central_top_customers_churn",
-        "C_south_phonesmax_stockout", "D1_east_chairs_march_dip",
+        "A_west_phones_discount", "B_central_top_customers_churn",
+        "C_east_south_phonesmax_stockout", "D1_east_chairs_march_dip",
         "D2_january_seasonal_dip", "U_september_uniform_dip",
     }
+    assert truth["date_range"] == ["2022-01-01", "2024-12-31"]
 
 
 def test_event_A_discount_spike_wrecks_margin(data):
     df, _ = data
-    wb = df[(df["Region"] == "West") & (df["Sub-Category"] == "Binders")]
-    inside = _between(wb, "2024-03-01", "2024-04-30")
-    outside = wb.drop(inside.index)
-    assert inside["Discount"].mean() > 0.30
+    wp = df[(df["Region"] == "West") & (df["Sub-Category"] == "Phones")]
+    inside = _between(wp, "2024-03-01", "2024-04-30")
+    outside = wp.drop(inside.index)
+    assert inside["Discount"].mean() > 0.28
     assert outside["Discount"].mean() < 0.15
     margin_in = inside["Profit"].sum() / inside["Sales"].sum()
     margin_out = outside["Profit"].sum() / outside["Sales"].sum()
-    assert margin_in < 0.05
-    assert margin_out > 0.20
+    assert margin_in < 0.0          # selling at a loss
+    assert margin_out > 0.10
 
 
 def test_event_B_top_customers_vanish(data):
@@ -73,26 +74,31 @@ def test_event_B_top_customers_vanish(data):
     ids = event["where"]["Customer ID"]
     assert len(ids) == 5
     mine = df[df["Customer ID"].isin(ids)]
-    assert len(_between(mine, "2023-01-01", "2024-05-31")) > 50
+    assert len(_between(mine, "2023-01-01", "2024-05-31")) > 200
     assert len(_between(mine, "2024-06-01", "2024-12-31")) == 0
 
 
 def test_event_C_stockout_cuts_units(data):
     df, _ = data
-    p = df[(df["Region"] == "South") & (df["Product Name"] == "Phones Max")]
+    p = df[df["Region"].isin(["East", "South"]) & (df["Product Name"] == "Phones Max")]
     units_2023 = _between(p, "2023-10-15", "2023-11-30")["Quantity"].sum()
     units_2024 = _between(p, "2024-10-15", "2024-11-30")["Quantity"].sum()
-    assert units_2023 > 20
+    assert units_2023 > 100
     assert units_2024 < 0.3 * units_2023
+    # other regions are unaffected
+    q = df[df["Region"].isin(["West", "Central"]) & (df["Product Name"] == "Phones Max")]
+    other_23 = _between(q, "2023-10-15", "2023-11-30")["Quantity"].sum()
+    other_24 = _between(q, "2024-10-15", "2024-11-30")["Quantity"].sum()
+    assert other_24 > 0.5 * other_23
 
 
 def test_decoy_D1_east_chairs_dip_every_march(data):
     """East Chairs make up a smaller share of East sales in March than in
-    other months, and this repeats in BOTH years (so it is recurring)."""
+    other months, and this repeats in ALL THREE years (so it is recurring)."""
     df, _ = data
     east = df[df["Region"] == "East"]
     is_chair = east["Sub-Category"] == "Chairs"
-    for year in (2023, 2024):
+    for year in (2022, 2023, 2024):
         y = east[east["Order Date"].dt.year == year]
         yc = is_chair[y.index]
         march = y["Order Date"].dt.month == 3
@@ -104,9 +110,10 @@ def test_decoy_D1_east_chairs_dip_every_march(data):
 
 def test_decoy_D2_january_is_slower_than_december(data):
     df, _ = data
-    dec = _between(df, "2023-12-01", "2023-12-31")["Sales"].sum()
-    jan = _between(df, "2024-01-01", "2024-01-31")["Sales"].sum()
-    assert jan < 0.8 * dec
+    for y in (2022, 2023):
+        dec = _between(df, f"{y}-12-01", f"{y}-12-31")["Sales"].sum()
+        jan = _between(df, f"{y + 1}-01-01", f"{y + 1}-01-31")["Sales"].sum()
+        assert jan < 0.8 * dec
 
 
 def test_event_U_september_dip_exists_and_is_not_one_region(data):

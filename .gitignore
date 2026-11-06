@@ -16,3 +16,7 @@ Thumbs.db
 # Large generated files (the demo CSV in data/ IS committed on purpose)
 data/*.duckdb
 data/generated_*.csv
+HANDOFF_PROMPT.md
+node_modules/
+frontend/dist/
+*.log

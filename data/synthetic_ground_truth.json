@@ -1,12 +1,12 @@
 {
   "note": "Planted events. 'expected_verdict' is what a correct InsightTrace engine should conclude.",
   "date_range": [
-    "2023-01-01",
+    "2022-01-01",
     "2024-12-31"
   ],
   "events": [
     {
-      "id": "A_west_binders_discount",
+      "id": "A_west_phones_discount",
       "type": "TRUE_CAUSE",
       "kpi": "profit",
       "window": [
@@ -15,11 +15,11 @@
       ],
       "where": {
         "Region": "West",
-        "Sub-Category": "Binders"
+        "Sub-Category": "Phones"
       },
-      "what_happened": "Discounts on Binders in the West jumped to 35-45%. Volume rose, revenue held up, but profit collapsed.",
+      "what_happened": "Discounts on Phones in the West jumped to 30-40%. Volume rose, revenue held up, but profit collapsed.",
       "expected_verdict": "CAUSE",
-      "expected_action": "Cap discounts on West Binders"
+      "expected_action": "Cap discounts on West Phones"
     },
     {
       "id": "B_central_top_customers_churn",
@@ -32,11 +32,11 @@
       "where": {
         "Region": "Central",
         "Customer ID": [
-          "CU-0161",
-          "CU-0169",
-          "CU-0172",
-          "CU-0174",
-          "CU-0195"
+          "CU-0242",
+          "CU-0286",
+          "CU-0312",
+          "CU-0317",
+          "CU-0330"
         ]
       },
       "what_happened": "The 5 largest Central customers stopped ordering from June 2024 and never returned.",
@@ -44,7 +44,7 @@
       "expected_action": "Win-back outreach to the churned accounts"
     },
     {
-      "id": "C_south_phonesmax_stockout",
+      "id": "C_east_south_phonesmax_stockout",
       "type": "TRUE_CAUSE",
       "kpi": "revenue",
       "window": [
@@ -52,19 +52,24 @@
         "2024-11-30"
       ],
       "where": {
-        "Region": "South",
+        "Region": [
+          "East",
+          "South"
+        ],
         "Product ID": "TEC-PH-00028",
         "Product Name": "Phones Max"
       },
-      "what_happened": "The best-selling South phone was ~92% unavailable for 6 weeks.",
+      "what_happened": "The best-selling phone was ~92% unavailable in the East and South for 6 weeks.",
       "expected_verdict": "CAUSE",
-      "expected_action": "Fix South inventory for this product"
+      "expected_action": "Fix East/South inventory for this product"
     },
     {
       "id": "D1_east_chairs_march_dip",
       "type": "DECOY",
       "kpi": "revenue",
       "window": [
+        "2022-03-01",
+        "2022-03-31",
         "2023-03-01",
         "2023-03-31",
         "2024-03-01",
@@ -74,7 +79,7 @@
         "Region": "East",
         "Sub-Category": "Chairs"
       },
-      "what_happened": "East Chairs dip every March, in both years. It overlaps event A but is recurring, not new.",
+      "what_happened": "East Chairs dip every March, in all three years. It overlaps event A but is recurring, not new.",
       "expected_verdict": "NOT_A_CAUSE",
       "expected_action": "None. Recurring pattern."
     },
@@ -83,6 +88,8 @@
       "type": "DECOY",
       "kpi": "revenue",
       "window": [
+        "2022-01-01",
+        "2022-01-31",
         "2023-01-01",
         "2023-01-31",
         "2024-01-01",

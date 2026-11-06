@@ -164,7 +164,7 @@ def test_monthly_and_weekly_series_add_up_to_total():
     for freq in ("D", "W", "M", "Q"):
         assert kpi_series(ds, "revenue", freq)["value"].sum() == pytest.approx(total)
     m = kpi_series(ds, "revenue", "M")
-    assert len(m) == 24
+    assert len(m) == 36
     assert m["period"].is_monotonic_increasing
 
 

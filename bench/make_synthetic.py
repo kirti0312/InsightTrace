@@ -23,14 +23,14 @@ import numpy as np
 import pandas as pd
 
 SEED = 42
-START = date(2023, 1, 1)
+START = date(2022, 1, 1)
 END = date(2024, 12, 31)
 OUT_DIR = Path(__file__).resolve().parent.parent / "data"
 
 # ----------------------------------------------------------------------------
 # Business setup
 # ----------------------------------------------------------------------------
-REGIONS = {"East": 0.28, "West": 0.32, "Central": 0.22, "South": 0.18}
+REGIONS = {"East": 0.26, "West": 0.30, "Central": 0.28, "South": 0.16}
 STATES = {
     "East": ["New York", "Pennsylvania", "Virginia"],
     "West": ["California", "Washington", "Oregon"],
@@ -50,7 +50,7 @@ SUBCATS = [
     ("Office Supplies", "Storage", 15, 120, 0.30, 1.2),
     ("Technology", "Phones", 80, 900, 0.25, 1.2),
     ("Technology", "Accessories", 10, 120, 0.32, 1.5),
-    ("Technology", "Machines", 300, 2500, 0.20, 0.3),
+    ("Technology", "Machines", 300, 1500, 0.20, 0.2),
 ]
 VARIANTS = ["Basic", "Plus", "Pro", "Max"]
 VARIANT_WEIGHTS = [1.0, 1.0, 0.8, 0.6]
@@ -59,7 +59,7 @@ VARIANT_WEIGHTS = [1.0, 1.0, 0.8, 0.6]
 SEASON = [0.78, 0.80, 0.92, 0.95, 1.00, 1.00, 0.97, 1.00, 1.10, 1.15, 1.35, 1.45]
 WEEKDAY = [1.0, 1.0, 1.0, 1.0, 1.0, 0.85, 0.70]  # Mon..Sun
 TREND_PER_DAY = 0.0003  # slow business growth
-BASE_ORDERS_PER_DAY = 11.0
+BASE_ORDERS_PER_DAY = 22.0
 
 DISCOUNT_VALUES = [0.0, 0.1, 0.2, 0.3]
 DISCOUNT_PROBS = [0.60, 0.22, 0.15, 0.03]
@@ -72,6 +72,7 @@ B_START = date(2024, 6, 1)                               # customer churn begins
 C_START, C_END = date(2024, 10, 15), date(2024, 11, 30)  # stockout
 U_START, U_END = date(2024, 9, 1), date(2024, 9, 30)     # unexplained dip
 STOCKOUT_PRODUCT_NAME = "Phones Max"
+STOCKOUT_REGIONS = ("East", "South")
 
 
 def _daterange(start: date, end: date):
@@ -92,7 +93,7 @@ def _build_catalog(rng: np.random.Generator):
             name = f"{sub} {variant}"
             weight = VARIANT_WEIGHTS[i]
             if name == STOCKOUT_PRODUCT_NAME:
-                weight = 5.0  # make it a best seller so its loss is visible
+                weight = 6.0  # make it a best seller so its loss is visible
             prods.append({
                 "id": f"{cat[:3].upper()}-{sub[:2].upper()}-{pid:05d}",
                 "name": name,
@@ -109,8 +110,8 @@ def _build_catalog(rng: np.random.Generator):
 
 
 def _build_customers(rng: np.random.Generator):
-    """~240 customers, each living in one region, with different buying power."""
-    total = 240
+    """~400 customers, each living in one region, with different buying power."""
+    total = 400
     customers = []
     n = 1
     for region, share in REGIONS.items():
@@ -129,7 +130,7 @@ def _build_customers(rng: np.random.Generator):
                      key=lambda c: -c["weight"])
     churned = central[:5]
     for c in churned:
-        c["weight"] *= 4.0
+        c["weight"] *= 8.0
     by_region = {}
     for region in REGIONS:
         group = [c for c in customers if c["region"] == region]
@@ -168,7 +169,7 @@ def generate(seed: int = SEED):
                 # Sub-category choice, with event A and decoy D1 adjustments
                 w = base_pop.copy()
                 if region == "West" and A_START <= d <= A_END:
-                    w[idx["Binders"]] *= 1.5          # promo drives volume
+                    w[idx["Phones"]] *= 1.5           # promo drives volume
                 if region == "East" and d.month == 3:
                     w[idx["Chairs"]] *= 0.35          # recurring March dip (decoy)
                 w = w / w.sum()
@@ -180,17 +181,17 @@ def generate(seed: int = SEED):
                     info = catalog[sub]
                     prod = info["products"][rng.choice(4, p=info["probs"])]
 
-                    # Event C: best-selling South phone is out of stock
-                    if (region == "South" and prod["name"] == STOCKOUT_PRODUCT_NAME
+                    # Event C: best-selling phone is out of stock in East + South
+                    if (region in STOCKOUT_REGIONS and prod["name"] == STOCKOUT_PRODUCT_NAME
                             and C_START <= d <= C_END and rng.random() < 0.92):
                         continue
                     # Event U: random, spread-out loss of sales across everything
                     if U_START <= d <= U_END and rng.random() < 0.18:
                         continue
 
-                    # Discount (event A forces a deep discount on West Binders)
-                    if region == "West" and sub == "Binders" and A_START <= d <= A_END:
-                        discount = float(rng.choice([0.35, 0.40, 0.45]))
+                    # Discount (event A forces a deep discount on West Phones)
+                    if region == "West" and sub == "Phones" and A_START <= d <= A_END:
+                        discount = float(rng.choice([0.30, 0.35, 0.40]))
                     else:
                         discount = float(rng.choice(DISCOUNT_VALUES, p=DISCOUNT_PROBS))
 
@@ -248,16 +249,16 @@ def _ground_truth(churned_ids, catalog):
         "date_range": [START.isoformat(), END.isoformat()],
         "events": [
             {
-                "id": "A_west_binders_discount",
+                "id": "A_west_phones_discount",
                 "type": "TRUE_CAUSE",
                 "kpi": "profit",
                 "window": [A_START.isoformat(), A_END.isoformat()],
-                "where": {"Region": "West", "Sub-Category": "Binders"},
-                "what_happened": ("Discounts on Binders in the West jumped to "
-                                  "35-45%. Volume rose, revenue held up, but "
+                "where": {"Region": "West", "Sub-Category": "Phones"},
+                "what_happened": ("Discounts on Phones in the West jumped to "
+                                  "30-40%. Volume rose, revenue held up, but "
                                   "profit collapsed."),
                 "expected_verdict": "CAUSE",
-                "expected_action": "Cap discounts on West Binders",
+                "expected_action": "Cap discounts on West Phones",
             },
             {
                 "id": "B_central_top_customers_churn",
@@ -271,24 +272,25 @@ def _ground_truth(churned_ids, catalog):
                 "expected_action": "Win-back outreach to the churned accounts",
             },
             {
-                "id": "C_south_phonesmax_stockout",
+                "id": "C_east_south_phonesmax_stockout",
                 "type": "TRUE_CAUSE",
                 "kpi": "revenue",
                 "window": [C_START.isoformat(), C_END.isoformat()],
-                "where": {"Region": "South", "Product ID": stockout_id,
+                "where": {"Region": list(STOCKOUT_REGIONS), "Product ID": stockout_id,
                           "Product Name": STOCKOUT_PRODUCT_NAME},
-                "what_happened": ("The best-selling South phone was ~92% "
-                                  "unavailable for 6 weeks."),
+                "what_happened": ("The best-selling phone was ~92% unavailable "
+                                  "in the East and South for 6 weeks."),
                 "expected_verdict": "CAUSE",
-                "expected_action": "Fix South inventory for this product",
+                "expected_action": "Fix East/South inventory for this product",
             },
             {
                 "id": "D1_east_chairs_march_dip",
                 "type": "DECOY",
                 "kpi": "revenue",
-                "window": ["2023-03-01", "2023-03-31", "2024-03-01", "2024-03-31"],
+                "window": ["2022-03-01", "2022-03-31", "2023-03-01", "2023-03-31",
+                           "2024-03-01", "2024-03-31"],
                 "where": {"Region": "East", "Sub-Category": "Chairs"},
-                "what_happened": ("East Chairs dip every March, in both years. "
+                "what_happened": ("East Chairs dip every March, in all three years. "
                                   "It overlaps event A but is recurring, not new."),
                 "expected_verdict": "NOT_A_CAUSE",
                 "expected_action": "None. Recurring pattern.",
@@ -297,7 +299,8 @@ def _ground_truth(churned_ids, catalog):
                 "id": "D2_january_seasonal_dip",
                 "type": "DECOY",
                 "kpi": "revenue",
-                "window": ["2023-01-01", "2023-01-31", "2024-01-01", "2024-01-31"],
+                "window": ["2022-01-01", "2022-01-31", "2023-01-01", "2023-01-31",
+                           "2024-01-01", "2024-01-31"],
                 "where": {},
                 "what_happened": ("January is always much slower than December. "
                                   "A naive month-over-month alert would fire."),
